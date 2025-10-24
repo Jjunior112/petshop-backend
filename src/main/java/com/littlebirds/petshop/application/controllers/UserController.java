@@ -36,6 +36,23 @@ public class UserController {
         this.userService = userService;
     }
 
+    @PostMapping("/adminRegister")
+    @SecurityRequirement(name = "bearer-key")
+    public ResponseEntity<AdminListDto> adminRegister(@RequestBody @Valid AdminRegisterDto register) {
+
+        User response = userService.createUserAdmin(register);
+
+        return ResponseEntity.ok().body(new AdminListDto(response));
+    }
+    @PostMapping("/register")
+    @SecurityRequirement(name = "bearer-key")
+    public ResponseEntity<AdminListDto> register(@RequestBody @Valid UserRegisterDto register) {
+
+        User response = userService.createCommonUser(register);
+
+        return ResponseEntity.ok().body(new AdminListDto(response));
+    }
+
     @PostMapping("/login")
     public ResponseEntity<JwtDto> login(@RequestBody @Valid LoginDto login) {
 
@@ -51,18 +68,6 @@ public class UserController {
                 new JwtDto(tokenJwt, user.getRole().name())
         );
     }
-
-    @PostMapping("/adminRegister")
-    @SecurityRequirement(name = "bearer-key")
-
-    public ResponseEntity<AdminListDto> adminRegister(@RequestBody @Valid AdminRegisterDto register) {
-
-        User response = userService.createUserAdmin(register);
-
-        return ResponseEntity.ok().body(new AdminListDto(response));
-    }
-
-
 
     @GetMapping
     @SecurityRequirement(name = "bearer-key")
