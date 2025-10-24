@@ -4,7 +4,9 @@ import com.littlebirds.petshop.domain.dtos.user.AdminRegisterDto;
 import com.littlebirds.petshop.domain.dtos.user.UserListDto;
 import com.littlebirds.petshop.domain.dtos.user.UserRegisterDto;
 import com.littlebirds.petshop.domain.enums.UserRole;
+import com.littlebirds.petshop.domain.models.Client;
 import com.littlebirds.petshop.domain.models.User;
+import com.littlebirds.petshop.infra.repositories.ClientRepository;
 import com.littlebirds.petshop.infra.repositories.UserRepository;
 import jakarta.transaction.Transactional;
 import org.springframework.data.domain.Page;
@@ -20,11 +22,13 @@ import java.util.UUID;
 @Service
 public class UserService implements UserDetailsService {
 
-    private UserRepository userRepository;
-    private PasswordEncoder passwordEncoder;
+    private final UserRepository userRepository;
+    private final ClientRepository clientRepository;
+    private final PasswordEncoder passwordEncoder;
 
-    public UserService(UserRepository userRepository, PasswordEncoder passwordEncoder) {
+    public UserService(UserRepository userRepository, ClientRepository clientRepository, PasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
+        this.clientRepository = clientRepository;
         this.passwordEncoder = passwordEncoder;
     }
 
@@ -62,7 +66,7 @@ public class UserService implements UserDetailsService {
     }
 
     @Transactional
-    public User createCommonUser(UserRegisterDto register) {
+    public Client createCommonUser(UserRegisterDto register) {
 
         if (userRepository.findByEmail(register.email()) != null) {
             throw new IllegalArgumentException("E-mail já cadastrado.");
@@ -70,7 +74,7 @@ public class UserService implements UserDetailsService {
 
         String encryptedPassword = passwordEncoder.encode(register.password());
 
-        User user = new User(
+        Client client = new Client(
                 register.fullName(),
                 register.email(),
                 encryptedPassword,
@@ -78,7 +82,7 @@ public class UserService implements UserDetailsService {
                 UserRole.CLIENT
         );
 
-        return userRepository.save(user);
+        return userRepository.save(client);
 
     }
 
