@@ -50,7 +50,7 @@ public class PetController {
         return ResponseEntity.ok().body(new PetListDto(pet));
     }
 
-    @PutMapping
+    @PutMapping("/{id}")
     public ResponseEntity<PetListDto> editPetInfo (@PathVariable Long id, @RequestBody EditPetInfoDto petInfoDto)
     {
         var pet = petService.editPetById(id,petInfoDto);
