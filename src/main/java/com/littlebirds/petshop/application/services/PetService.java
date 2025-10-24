@@ -1,5 +1,6 @@
 package com.littlebirds.petshop.application.services;
 
+import com.littlebirds.petshop.domain.dtos.pet.EditPetInfoDto;
 import com.littlebirds.petshop.domain.dtos.pet.PetListDto;
 import com.littlebirds.petshop.domain.dtos.pet.PetRegisterDto;
 import com.littlebirds.petshop.domain.models.Client;
@@ -60,6 +61,15 @@ public class PetService {
         return petRepository.getReferenceById(id);
     }
 
+    public Pet editPetById(Long id, EditPetInfoDto petInfoDto) {
+
+        var pet = findPetById(id);
+
+        pet.editPetInfo(petInfoDto);
+
+        return petRepository.save(pet);
+    }
+
     @Transactional
     public void deletePet(Long id)
     {
@@ -67,5 +77,4 @@ public class PetService {
 
         petRepository.delete(pet);
     }
-
 }

@@ -2,5 +2,7 @@ package com.littlebirds.petshop.domain.dtos.pet;
 
 import com.littlebirds.petshop.domain.enums.PetType;
 
-public record PetRegisterDto(String name, PetType petType, String race) {
+import java.time.LocalDateTime;
+
+public record PetRegisterDto(String name, PetType petType, String race, String color, LocalDateTime born) {
 }

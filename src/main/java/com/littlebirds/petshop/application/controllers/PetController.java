@@ -1,6 +1,7 @@
 package com.littlebirds.petshop.application.controllers;
 
 import com.littlebirds.petshop.application.services.PetService;
+import com.littlebirds.petshop.domain.dtos.pet.EditPetInfoDto;
 import com.littlebirds.petshop.domain.dtos.pet.PetListDto;
 import com.littlebirds.petshop.domain.dtos.pet.PetRegisterDto;
 import com.littlebirds.petshop.domain.dtos.user.AdminListDto;
@@ -16,6 +17,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/pets")
+@SecurityRequirement(name = "bearer-key")
 public class PetController {
 
     private final PetService petService;
@@ -25,7 +27,6 @@ public class PetController {
     }
 
     @PostMapping
-    @SecurityRequirement(name = "bearer-key")
     public ResponseEntity<PetListDto> petRegister(@RequestBody @Valid PetRegisterDto pet) {
 
         Pet response = petService.createPet(pet);
@@ -34,13 +35,35 @@ public class PetController {
     }
 
     @GetMapping
-    @SecurityRequirement(name = "bearer-key")
     public ResponseEntity<List<PetListDto>> getAllPets()
     {
 
         var pets =  petService.findAllPets();
 
         return ResponseEntity.ok().body(pets);
+    }
+    @GetMapping("/{id}")
+    public ResponseEntity<PetListDto> getPetByid (@PathVariable Long id)
+    {
+        var pet = petService.findPetById(id);
+
+        return ResponseEntity.ok().body(new PetListDto(pet));
+    }
+
+    @PutMapping
+    public ResponseEntity<PetListDto> editPetInfo (@PathVariable Long id, @RequestBody EditPetInfoDto petInfoDto)
+    {
+        var pet = petService.editPetById(id,petInfoDto);
+
+        return ResponseEntity.ok().body(new PetListDto(pet));
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deletePetById (@PathVariable Long id)
+    {
+       petService.deletePet(id);
+
+        return ResponseEntity.noContent().build();
     }
 
 }
