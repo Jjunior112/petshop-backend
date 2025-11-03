@@ -20,7 +20,7 @@ public class WorkHourValidation implements Validation {
         var afterHour = dateScheduling.getHour() > 18;
 
         if (sunday || beforeHour || afterHour) {
-            throw new ValidationException("Consulta fora do horário de funcionamento da clinica!");
+            throw new ValidationException("Agendamento fora do horário de funcionamento da clinica!");
         }
 
 

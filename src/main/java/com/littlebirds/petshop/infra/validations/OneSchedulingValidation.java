@@ -3,7 +3,9 @@ package com.littlebirds.petshop.infra.validations;
 import com.littlebirds.petshop.domain.dtos.scheduling.SchedulingRegisterDto;
 import com.littlebirds.petshop.infra.repositories.SchedulingRepository;
 import jakarta.validation.ValidationException;
+import org.springframework.stereotype.Component;
 
+@Component
 public class OneSchedulingValidation implements Validation{
 
     private final SchedulingRepository schedulingRepository;
@@ -22,7 +24,7 @@ public class OneSchedulingValidation implements Validation{
 
         if(isOneConsult)
         {
-            throw new ValidationException("Paciente já possui consulta agendada nesse dia!");
+            throw new ValidationException("Pet já possui agendamento para esse dia!");
         }
     }
 

@@ -18,7 +18,7 @@ public class SchedulingHourValidation implements Validation{
         var diference = Duration.between(now, dateScheduling).toMinutes();
 
         if (diference < 30) {
-            throw new ValidationException("A consulta deve ser agendada com 30 minutos de antecedência!");
+            throw new ValidationException("O agendamento dever ser feito com 30 minutos de antecedência!");
         }
 
     }

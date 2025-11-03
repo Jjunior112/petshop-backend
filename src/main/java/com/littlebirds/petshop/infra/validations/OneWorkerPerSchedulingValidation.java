@@ -3,7 +3,9 @@ package com.littlebirds.petshop.infra.validations;
 import com.littlebirds.petshop.domain.dtos.scheduling.SchedulingRegisterDto;
 import com.littlebirds.petshop.infra.repositories.SchedulingRepository;
 import jakarta.validation.ValidationException;
+import org.springframework.stereotype.Component;
 
+@Component
 public class OneWorkerPerSchedulingValidation implements Validation{
 
     private final SchedulingRepository schedulingRepository;

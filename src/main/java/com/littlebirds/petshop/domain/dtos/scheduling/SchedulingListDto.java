@@ -5,8 +5,22 @@ import com.littlebirds.petshop.domain.models.Scheduling;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
-public record SchedulingListDto(Long id, UUID workerId, Long petId, LocalDateTime date) {
+public record SchedulingListDto(
+        Long id,
+        Long petId,
+        String petName,
+        UUID workerId,
+        String workerName,
+        LocalDateTime date
+) {
     public SchedulingListDto(Scheduling scheduling) {
-        this(scheduling.getId(),scheduling.getWorker().getId(),scheduling.getPet().getId(),scheduling.getDate());
+        this(
+                scheduling.getId(),
+                scheduling.getPet().getId(),
+                scheduling.getPet().getName(),
+                scheduling.getWorker().getId(),
+                scheduling.getWorker().getFullName(),
+                scheduling.getDate()
+        );
     }
 }

@@ -6,7 +6,9 @@ import com.littlebirds.petshop.domain.models.Pet;
 import com.littlebirds.petshop.domain.models.Scheduling;
 import com.littlebirds.petshop.domain.models.Worker;
 import com.littlebirds.petshop.infra.repositories.SchedulingRepository;
+import com.littlebirds.petshop.infra.repositories.WorkerRepository;
 import com.littlebirds.petshop.infra.validations.Validation;
+import jakarta.validation.ValidationException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -20,22 +22,22 @@ public class SchedulingService {
 
     private final PetService petService;
 
-    private final UserService userService;
+    private final WorkerRepository workerRepository;
 
     @Autowired
     private List<Validation> validators;
 
-    public SchedulingService(SchedulingRepository schedulingRepository, PetService petService, UserService userService) {
-        this.schedulingRepository = schedulingRepository;
+    public SchedulingService(WorkerRepository workerRepository, PetService petService, SchedulingRepository schedulingRepository) {
+        this.workerRepository = workerRepository;
         this.petService = petService;
-        this.userService = userService;
+        this.schedulingRepository = schedulingRepository;
     }
 
     @Transactional
     public Scheduling createScheduling (SchedulingRegisterDto registerDto)
     {
-
-        var worker = (Worker) userService.findUserById(registerDto.workerId());
+        var worker = workerRepository.findById(registerDto.workerId())
+                .orElseThrow(() -> new ValidationException("Funcionário informado não existe."));
 
         var pet = petService.findPetById(registerDto.petId());
 
@@ -65,7 +67,7 @@ public class SchedulingService {
 
         // Atualiza o trabalhador se informado
         if (dto.workerId() != null) {
-            var worker = (Worker) userService.findUserById(dto.workerId());
+            var worker =  workerRepository.getReferenceById(dto.workerId());
             scheduling.setWorker(worker);
         }
 

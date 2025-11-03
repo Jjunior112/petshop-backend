@@ -28,7 +28,7 @@ public class SecurityConfiguration {
                         auth.requestMatchers(
                                         HttpMethod.POST, "/user/login","/user/register").permitAll()
                                 .requestMatchers(HttpMethod.GET, "/v3/api-docs/**", "/swagger-ui.html", "/swagger-ui/**").permitAll()
-                                .requestMatchers(HttpMethod.POST, "/user/adminRegister", "/user/sellerRegister").hasRole(UserRole.ADMIN.name())
+                                .requestMatchers(HttpMethod.POST, "/user/adminRegister", "/user/workerRegister").hasRole(UserRole.ADMIN.name())
                                 .requestMatchers(HttpMethod.GET, "/user").hasRole(UserRole.ADMIN.name())
                                 .requestMatchers(HttpMethod.PUT, "/user/**", "user/reactive/**").hasRole(UserRole.ADMIN.name())
                                 .requestMatchers(HttpMethod.DELETE, "/user").hasRole(UserRole.ADMIN.name())

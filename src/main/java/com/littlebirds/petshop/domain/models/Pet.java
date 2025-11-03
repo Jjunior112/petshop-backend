@@ -1,5 +1,6 @@
 package com.littlebirds.petshop.domain.models;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.littlebirds.petshop.domain.dtos.pet.EditPetInfoDto;
 import com.littlebirds.petshop.domain.dtos.pet.PetRegisterDto;
 import com.littlebirds.petshop.domain.enums.PetType;
@@ -25,6 +26,7 @@ public class Pet {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", nullable = false)
+    @JsonIgnore
     private Client client;
 
     @OneToMany(mappedBy = "pet", cascade = CascadeType.ALL, orphanRemoval = true)

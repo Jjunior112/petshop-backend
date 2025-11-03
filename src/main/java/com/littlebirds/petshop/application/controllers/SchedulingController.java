@@ -1,6 +1,7 @@
 package com.littlebirds.petshop.application.controllers;
 
 import com.littlebirds.petshop.application.services.SchedulingService;
+import com.littlebirds.petshop.domain.dtos.scheduling.SchedulingListDto;
 import com.littlebirds.petshop.domain.dtos.scheduling.SchedulingRegisterDto;
 import com.littlebirds.petshop.domain.dtos.scheduling.SchedulingUpdateDto;
 import com.littlebirds.petshop.domain.models.Scheduling;
@@ -8,6 +9,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/schedulings")
@@ -20,30 +22,36 @@ public class SchedulingController {
     }
 
     @PostMapping
-    public ResponseEntity<Scheduling> createScheduling(@RequestBody SchedulingRegisterDto registerDto) {
+    public ResponseEntity<SchedulingListDto> createScheduling(@RequestBody SchedulingRegisterDto registerDto) {
         Scheduling scheduling = schedulingService.createScheduling(registerDto);
-        return ResponseEntity.ok(scheduling);
+        SchedulingListDto dto = new SchedulingListDto(scheduling);
+        return ResponseEntity.ok(dto);
     }
 
     @GetMapping
-    public ResponseEntity<List<Scheduling>> findAll() {
+    public ResponseEntity<List<SchedulingListDto>> findAll() {
         List<Scheduling> schedulings = schedulingService.findAll();
-        return ResponseEntity.ok(schedulings);
+        List<SchedulingListDto> dtos = schedulings.stream()
+                .map(SchedulingListDto::new)
+                .collect(Collectors.toList());
+        return ResponseEntity.ok(dtos);
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Scheduling> findById(@PathVariable Long id) {
+    public ResponseEntity<SchedulingListDto> findById(@PathVariable Long id) {
         Scheduling scheduling = schedulingService.findById(id);
-        return ResponseEntity.ok(scheduling);
+        SchedulingListDto dto = new SchedulingListDto(scheduling);
+        return ResponseEntity.ok(dto);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Scheduling> updateScheduling(
+    public ResponseEntity<SchedulingListDto> updateScheduling(
             @PathVariable Long id,
             @RequestBody SchedulingUpdateDto updateDto
     ) {
         Scheduling updated = schedulingService.updateScheduling(id, updateDto);
-        return ResponseEntity.ok(updated);
+        SchedulingListDto dto = new SchedulingListDto(updated);
+        return ResponseEntity.ok(dto);
     }
 
     @DeleteMapping("/{id}")
