@@ -6,7 +6,7 @@ import com.littlebirds.petshop.domain.enums.PetType;
 import jakarta.persistence.*;
 import lombok.*;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 
 @Entity
 @Table(name = "pets")
@@ -39,7 +39,7 @@ public class Pet {
     private String color;
 
     @Column(nullable = false)
-    private LocalDateTime born;
+    private LocalDate born;
 
     public Pet(PetRegisterDto pet,Client client) {
         this.client = client;
