@@ -6,8 +6,10 @@ import com.littlebirds.petshop.domain.dtos.user.UserRegisterDto;
 import com.littlebirds.petshop.domain.enums.UserRole;
 import com.littlebirds.petshop.domain.models.Client;
 import com.littlebirds.petshop.domain.models.User;
+import com.littlebirds.petshop.domain.models.Worker;
 import com.littlebirds.petshop.infra.repositories.ClientRepository;
 import com.littlebirds.petshop.infra.repositories.UserRepository;
+import com.littlebirds.petshop.infra.repositories.WorkerRepository;
 import jakarta.transaction.Transactional;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -24,11 +26,13 @@ public class UserService implements UserDetailsService {
 
     private final UserRepository userRepository;
     private final ClientRepository clientRepository;
+    private final WorkerRepository workerRepository;
     private final PasswordEncoder passwordEncoder;
 
-    public UserService(UserRepository userRepository, ClientRepository clientRepository, PasswordEncoder passwordEncoder) {
+    public UserService(UserRepository userRepository, ClientRepository clientRepository, WorkerRepository workerRepository, PasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
         this.clientRepository = clientRepository;
+        this.workerRepository = workerRepository;
         this.passwordEncoder = passwordEncoder;
     }
 
@@ -66,6 +70,26 @@ public class UserService implements UserDetailsService {
     }
 
     @Transactional
+    public Worker createWorkerUser(UserRegisterDto register) {
+
+        if (userRepository.findByEmail(register.email()) != null) {
+            throw new IllegalArgumentException("E-mail já cadastrado.");
+        }
+
+        String encryptedPassword = passwordEncoder.encode(register.password());
+
+        Worker worker = new Worker(
+                register.fullName(),
+                register.email(),
+                encryptedPassword,
+                register.phone(),
+                UserRole.WORKER
+        );
+
+        return userRepository.save(worker);
+    }
+
+    @Transactional
     public Client createCommonUser(UserRegisterDto register) {
 
         if (userRepository.findByEmail(register.email()) != null) {
@@ -94,7 +118,6 @@ public class UserService implements UserDetailsService {
         }
     }
 
-
     public User findUserById(UUID id) {
         return userRepository.getReferenceById(id);
     }
@@ -104,7 +127,6 @@ public class UserService implements UserDetailsService {
         User user = userRepository.getReferenceById(id);
 
         user.inactiveUser();
-
     }
 
     @Transactional
@@ -112,12 +134,11 @@ public class UserService implements UserDetailsService {
         User user = userRepository.getReferenceById(id);
 
         user.reactiveUser();
-
     }
 
     public boolean existUser(String email) {
-        var user = userRepository.findByEmail(email);
 
+        var user = userRepository.findByEmail(email);
         return user != null;
     }
 }

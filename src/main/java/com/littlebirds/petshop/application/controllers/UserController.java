@@ -20,9 +20,7 @@ import java.util.UUID;
 
 @RestController
 @RequestMapping("/user")
-
 public class UserController {
-
 
     private AuthenticationManager authenticationManager;
 
@@ -44,13 +42,24 @@ public class UserController {
 
         return ResponseEntity.ok().body(new AdminListDto(response));
     }
+
+
+    @PostMapping("/workerRegister")
+    @SecurityRequirement(name = "bearer-key")
+    public ResponseEntity<UserListDto> workerRegister(@RequestBody @Valid UserRegisterDto register) {
+
+        User response = userService.createWorkerUser(register);
+
+        return ResponseEntity.ok().body(new UserListDto(response));
+    }
+
     @PostMapping("/register")
     @SecurityRequirement(name = "bearer-key")
-    public ResponseEntity<AdminListDto> register(@RequestBody @Valid UserRegisterDto register) {
+    public ResponseEntity<UserListDto> register(@RequestBody @Valid UserRegisterDto register) {
 
         User response = userService.createCommonUser(register);
 
-        return ResponseEntity.ok().body(new AdminListDto(response));
+        return ResponseEntity.ok().body(new UserListDto(response));
     }
 
     @PostMapping("/login")
@@ -108,6 +117,5 @@ public class UserController {
 
         return ResponseEntity.noContent().build();
     }
-
 
 }
