@@ -7,6 +7,8 @@ import jakarta.persistence.*;
 import lombok.*;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Table(name = "pets")
@@ -22,8 +24,11 @@ public class Pet {
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id", nullable = false) // cria a FK em pets
+    @JoinColumn(name = "user_id", nullable = false)
     private Client client;
+
+    @OneToMany(mappedBy = "pet", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Scheduling> schedulings = new ArrayList<>();
 
     @Column(nullable = false)
     private String name;
@@ -68,5 +73,14 @@ public class Pet {
         {
             this.born = petInfoDto.born();
         }
+    }
+    public void addScheduling(Scheduling scheduling) {
+        schedulings.add(scheduling);
+        scheduling.setPet(this);
+    }
+
+    public void removeScheduling(Scheduling scheduling) {
+        schedulings.remove(scheduling);
+        scheduling.setPet(null);
     }
 }

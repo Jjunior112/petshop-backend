@@ -27,4 +27,14 @@ public class Worker extends User {
         super(fullName, email, password, phone, role);
     }
 
+    public void addScheduling(Scheduling scheduling) {
+        schedulings.add(scheduling);
+        scheduling.setWorker(this);
+    }
+
+    public void removeScheduling(Scheduling scheduling) {
+        schedulings.remove(scheduling);
+        scheduling.setWorker(null);
+    }
+
 }
