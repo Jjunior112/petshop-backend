@@ -1,7 +1,9 @@
 package com.littlebirds.petshop.application.services;
 
+import com.littlebirds.petshop.domain.dtos.scheduling.SchedulingListDto;
 import com.littlebirds.petshop.domain.dtos.scheduling.SchedulingRegisterDto;
 import com.littlebirds.petshop.domain.dtos.scheduling.SchedulingUpdateDto;
+import com.littlebirds.petshop.domain.enums.SchedulingStatus;
 import com.littlebirds.petshop.domain.models.Pet;
 import com.littlebirds.petshop.domain.models.Scheduling;
 import com.littlebirds.petshop.domain.models.Worker;
@@ -10,6 +12,8 @@ import com.littlebirds.petshop.infra.repositories.WorkerRepository;
 import com.littlebirds.petshop.infra.validations.Validation;
 import jakarta.validation.ValidationException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -52,8 +56,15 @@ public class SchedulingService {
         return schedulingRepository.save(scheduling);
     }
 
-    public List<Scheduling> findAll() {
-        return schedulingRepository.findAll();
+    public Page<SchedulingListDto> findAllSchedulings(Pageable pageable, SchedulingStatus status) {
+        Page<Scheduling> schedulings;
+        if (status != null) {
+            schedulings = schedulingRepository.findByStatus(status, pageable);
+        } else {
+            schedulings = schedulingRepository.findAll(pageable);
+        }
+
+        return schedulings.map(SchedulingListDto::new);
     }
 
     public Scheduling findById(Long id) {

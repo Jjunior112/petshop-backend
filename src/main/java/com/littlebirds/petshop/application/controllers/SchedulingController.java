@@ -4,7 +4,13 @@ import com.littlebirds.petshop.application.services.SchedulingService;
 import com.littlebirds.petshop.domain.dtos.scheduling.SchedulingListDto;
 import com.littlebirds.petshop.domain.dtos.scheduling.SchedulingRegisterDto;
 import com.littlebirds.petshop.domain.dtos.scheduling.SchedulingUpdateDto;
+import com.littlebirds.petshop.domain.enums.SchedulingStatus;
 import com.littlebirds.petshop.domain.models.Scheduling;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -29,12 +35,14 @@ public class SchedulingController {
     }
 
     @GetMapping
-    public ResponseEntity<List<SchedulingListDto>> findAll() {
-        List<Scheduling> schedulings = schedulingService.findAll();
-        List<SchedulingListDto> dtos = schedulings.stream()
-                .map(SchedulingListDto::new)
-                .collect(Collectors.toList());
-        return ResponseEntity.ok(dtos);
+    @SecurityRequirement(name = "bearer-key")
+    public ResponseEntity<Page<SchedulingListDto>> getAllSchedulings(
+            @PageableDefault(sort = "date", size = 10) Pageable pagination,
+            @RequestParam(name = "status", required = false) SchedulingStatus status) {
+
+        Page<SchedulingListDto> response = schedulingService.findAllSchedulings(pagination, status);
+
+        return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
     @GetMapping("/{id}")

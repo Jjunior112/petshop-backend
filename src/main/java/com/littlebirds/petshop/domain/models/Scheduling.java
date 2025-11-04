@@ -1,5 +1,6 @@
 package com.littlebirds.petshop.domain.models;
 
+import com.littlebirds.petshop.domain.enums.SchedulingStatus;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Future;
 import jakarta.validation.constraints.NotNull;
@@ -30,9 +31,18 @@ public class Scheduling {
 
     private LocalDateTime date;
 
+    @Column(nullable = false)
+    @Enumerated(EnumType.STRING)
+    private SchedulingStatus status = SchedulingStatus.PENDING;
+
     public Scheduling(Pet pet, Worker worker, @NotNull @Future LocalDateTime date) {
         this.pet = pet;
         this.worker = worker;
         this.date = date;
+    }
+
+    public void changeStatus(SchedulingStatus status)
+    {
+        this.status = status;
     }
 }

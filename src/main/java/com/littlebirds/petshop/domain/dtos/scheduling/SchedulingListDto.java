@@ -1,5 +1,6 @@
 package com.littlebirds.petshop.domain.dtos.scheduling;
 
+import com.littlebirds.petshop.domain.enums.SchedulingStatus;
 import com.littlebirds.petshop.domain.models.Scheduling;
 
 import java.time.LocalDateTime;
@@ -11,7 +12,8 @@ public record SchedulingListDto(
         String petName,
         UUID workerId,
         String workerName,
-        LocalDateTime date
+        LocalDateTime date,
+        SchedulingStatus status
 ) {
     public SchedulingListDto(Scheduling scheduling) {
         this(
@@ -20,7 +22,8 @@ public record SchedulingListDto(
                 scheduling.getPet().getName(),
                 scheduling.getWorker().getId(),
                 scheduling.getWorker().getFullName(),
-                scheduling.getDate()
+                scheduling.getDate(),
+                scheduling.getStatus()
         );
     }
 }
