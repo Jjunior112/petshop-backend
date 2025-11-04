@@ -1,5 +1,6 @@
 package com.littlebirds.petshop.domain.models;
 
+import com.littlebirds.petshop.domain.dtos.address.AddressRegisterDto;
 import com.littlebirds.petshop.domain.enums.UserRole;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -23,8 +24,8 @@ public class Worker extends User {
     @OneToMany(mappedBy = "worker", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Scheduling> schedulings = new ArrayList<>();
 
-    public Worker(String fullName, String email, String password, String phone, UserRole role) {
-        super(fullName, email, password, phone, role);
+    public Worker(String fullName, String email, String password, String phone, UserRole role, AddressRegisterDto registerDto) {
+        super(fullName, email, password, phone, role,registerDto);
     }
 
     public void addScheduling(Scheduling scheduling) {

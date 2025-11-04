@@ -62,7 +62,8 @@ public class UserService implements UserDetailsService {
                 register.email(),
                 encryptedPassword,
                 register.phone(),
-                UserRole.ADMIN
+                UserRole.ADMIN,
+                null
         );
 
         return userRepository.save(user);
@@ -83,7 +84,8 @@ public class UserService implements UserDetailsService {
                 register.email(),
                 encryptedPassword,
                 register.phone(),
-                UserRole.WORKER
+                UserRole.WORKER,
+                register.address()
         );
 
         return userRepository.save(worker);
@@ -103,7 +105,8 @@ public class UserService implements UserDetailsService {
                 register.email(),
                 encryptedPassword,
                 register.phone(),
-                UserRole.CLIENT
+                UserRole.CLIENT,
+                register.address()
         );
 
         return userRepository.save(client);

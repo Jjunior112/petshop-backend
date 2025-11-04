@@ -1,18 +1,23 @@
 package com.littlebirds.petshop.domain.dtos.user;
 
+import com.littlebirds.petshop.domain.dtos.address.AddressRegisterDto;
+import jakarta.validation.Valid;
 import jakarta.validation.constraints.*;
 
 public record UserRegisterDto(
-                             @NotNull
+        @NotNull
                              @NotBlank
                               String fullName,
-                             @NotNull
+        @NotNull
                              @NotBlank
                              @Email
                               String email,
-                             @NotNull
+        @NotNull
                              @NotBlank
                              @Size(min = 6, message = "A senha deve ter no mínimo 6 caracteres")
                               String password,
-                              String phone) {
+                              String phone,
+        @Valid
+                              AddressRegisterDto address
+) {
 }

@@ -1,5 +1,6 @@
 package com.littlebirds.petshop.domain.models;
 
+import com.littlebirds.petshop.domain.dtos.address.AddressRegisterDto;
 import com.littlebirds.petshop.domain.enums.UserRole;
 import jakarta.persistence.*;
 import lombok.*;
@@ -27,8 +28,8 @@ public class Client extends User {
         this.pets.remove(pet);
     }
 
-    public Client(String fullName, String email, String password, String phone, UserRole role) {
-        super(fullName, email, password, phone, role);
+    public Client(String fullName, String email, String password, String phone, UserRole role, AddressRegisterDto registerDto) {
+        super(fullName, email, password, phone, role, registerDto);
     }
 
 }
