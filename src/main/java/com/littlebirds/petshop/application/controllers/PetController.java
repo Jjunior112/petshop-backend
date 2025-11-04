@@ -10,6 +10,10 @@ import com.littlebirds.petshop.domain.models.Pet;
 import com.littlebirds.petshop.domain.models.User;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.validation.Valid;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -35,13 +39,15 @@ public class PetController {
     }
 
     @GetMapping
-    public ResponseEntity<List<PetListDto>> getAllPets()
-    {
+    @SecurityRequirement(name = "bearer-key")
+    public ResponseEntity<Page<PetListDto>> getAllPets(
+            @PageableDefault(sort = "name", size = 10) Pageable pagination) {
 
-        var pets =  petService.findAllPets();
+        Page<PetListDto> response = petService.findAllPets(pagination);
 
-        return ResponseEntity.ok().body(pets);
+        return new ResponseEntity<>(response, HttpStatus.OK);
     }
+
     @GetMapping("/{id}")
     public ResponseEntity<PetListDto> getPetByid (@PathVariable Long id)
     {
