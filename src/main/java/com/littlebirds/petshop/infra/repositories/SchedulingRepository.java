@@ -13,6 +13,10 @@ public interface SchedulingRepository extends JpaRepository<Scheduling, Long> {
 
     Page<Scheduling> findByStatus(SchedulingStatus status, Pageable pageable);
 
+    Page<Scheduling> findByClientEmail(String email, Pageable pageable);
+
+    Page<Scheduling> findByClientEmailAndStatus(String email, SchedulingStatus status, Pageable pageable);
+
     Boolean existsByWorkerIdAndDate(UUID id, LocalDateTime date);
 
     Boolean existsByPetIdAndDateBetween(Long id, LocalDateTime firstHour, LocalDateTime lastHour);

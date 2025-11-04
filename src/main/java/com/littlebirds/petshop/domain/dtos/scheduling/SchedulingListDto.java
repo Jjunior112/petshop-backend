@@ -8,6 +8,7 @@ import java.util.UUID;
 
 public record SchedulingListDto(
         Long id,
+        String clientName,
         Long petId,
         String petName,
         UUID workerId,
@@ -18,6 +19,7 @@ public record SchedulingListDto(
     public SchedulingListDto(Scheduling scheduling) {
         this(
                 scheduling.getId(),
+                scheduling.getClientName(),
                 scheduling.getPet().getId(),
                 scheduling.getPet().getName(),
                 scheduling.getWorker().getId(),

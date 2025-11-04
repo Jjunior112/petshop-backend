@@ -14,8 +14,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
-import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/schedulings")
@@ -53,11 +51,17 @@ public class SchedulingController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<SchedulingListDto> updateScheduling(
-            @PathVariable Long id,
-            @RequestBody SchedulingUpdateDto updateDto
-    ) {
+    public ResponseEntity<SchedulingListDto> updateScheduling(@PathVariable Long id, @RequestBody SchedulingUpdateDto updateDto)
+    {
         Scheduling updated = schedulingService.updateScheduling(id, updateDto);
+        SchedulingListDto dto = new SchedulingListDto(updated);
+        return ResponseEntity.ok(dto);
+    }
+
+    @PutMapping("/complete/{id}")
+    public ResponseEntity<SchedulingListDto> updateSchedulingStatus(@PathVariable Long id)
+    {
+        Scheduling updated = schedulingService.updateSchedulingStatus(id);
         SchedulingListDto dto = new SchedulingListDto(updated);
         return ResponseEntity.ok(dto);
     }

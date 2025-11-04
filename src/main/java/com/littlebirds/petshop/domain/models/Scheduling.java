@@ -25,6 +25,10 @@ public class Scheduling {
     @JoinColumn(name = "pet_id")
     private Pet pet;
 
+    private String clientName;
+
+    private String clientEmail;
+
     @ManyToOne
     @JoinColumn(name = "worker_id")
     private Worker worker;
@@ -35,8 +39,10 @@ public class Scheduling {
     @Enumerated(EnumType.STRING)
     private SchedulingStatus status = SchedulingStatus.PENDING;
 
-    public Scheduling(Pet pet, Worker worker, @NotNull @Future LocalDateTime date) {
+    public Scheduling(Pet pet,String clientName, String clientEmail, Worker worker, @NotNull @Future LocalDateTime date) {
         this.pet = pet;
+        this.clientName = clientName;
+        this.clientEmail = clientEmail;
         this.worker = worker;
         this.date = date;
     }
