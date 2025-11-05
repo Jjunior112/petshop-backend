@@ -1,4 +1,6 @@
 package com.littlebirds.petshop.domain.dtos.user;
 
-public record JwtDto(String token, String role) {
+import java.util.UUID;
+
+public record JwtDto(UUID userId, String token, String role) {
 }

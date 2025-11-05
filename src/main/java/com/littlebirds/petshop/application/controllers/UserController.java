@@ -74,7 +74,7 @@ public class UserController {
         var tokenJwt = tokenService.generateToken(user);
 
         return ResponseEntity.ok(
-                new JwtDto(tokenJwt, user.getRole().name())
+                new JwtDto(user.getId(),tokenJwt, user.getRole().name())
         );
     }
 
@@ -89,7 +89,6 @@ public class UserController {
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
-
     @GetMapping("/{id}")
     @SecurityRequirement(name = "bearer-key")
     public ResponseEntity<UserListDto> getUserById(@PathVariable UUID id) {
@@ -98,7 +97,6 @@ public class UserController {
 
         return new ResponseEntity<>(new UserListDto(response), HttpStatus.OK);
     }
-
 
     @PutMapping("/reactive/{id}")
     @SecurityRequirement(name = "bearer-key")
@@ -111,7 +109,6 @@ public class UserController {
 
     @DeleteMapping("/{id}")
     @SecurityRequirement(name = "bearer-key")
-
     public ResponseEntity inactiveUser(@PathVariable UUID id) {
         userService.inactiveUser(id);
 
