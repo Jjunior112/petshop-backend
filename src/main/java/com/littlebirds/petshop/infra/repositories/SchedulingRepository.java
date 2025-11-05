@@ -7,6 +7,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
 import java.util.UUID;
 
 public interface SchedulingRepository extends JpaRepository<Scheduling, Long> {
@@ -17,7 +18,7 @@ public interface SchedulingRepository extends JpaRepository<Scheduling, Long> {
 
     Page<Scheduling> findByClientEmailAndStatus(String email, SchedulingStatus status, Pageable pageable);
 
-    Boolean existsByWorkerIdAndDate(UUID id, LocalDateTime date);
+    Boolean existsByWorkerIdAndDate(UUID id, OffsetDateTime date);
 
-    Boolean existsByPetIdAndDateBetween(Long id, LocalDateTime firstHour, LocalDateTime lastHour);
+    Boolean existsByPetIdAndDateBetween(Long id, OffsetDateTime firstHour, OffsetDateTime lastHour);
 }

@@ -60,7 +60,7 @@ public class SchedulingService {
 
         validators.forEach(v -> v.validate(registerDto));
 
-        Scheduling scheduling = new Scheduling(pet,pet.getClient().getFullName(), userEmail, worker, registerDto.date());
+        Scheduling scheduling = new Scheduling(pet, registerDto.serviceType(), pet.getClient().getFullName(), userEmail, worker, registerDto.date());
 
         worker.addScheduling(scheduling);
         pet.addScheduling(scheduling);
