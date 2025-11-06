@@ -193,6 +193,10 @@ public class SchedulingService {
             throw new ValidationException("Você não tem permissão para cancelar este agendamento.");
         }
 
+        if (scheduling.getStatus() != SchedulingStatus.PENDING) {
+            throw new ValidationException("Somente agendamentos pendentes podem ser cancelados.");
+        }
+
         scheduling.changeStatus(SchedulingStatus.CANCELED);
         schedulingRepository.save(scheduling);
     }

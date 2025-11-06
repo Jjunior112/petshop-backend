@@ -89,6 +89,18 @@ public class UserController {
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
+    @GetMapping("/workers")
+    @SecurityRequirement(name = "bearer-key")
+    public ResponseEntity<Page<UserListDto>> getAllWorkers(
+            @PageableDefault(sort = "email", size = 10) Pageable pagination) {
+
+        var role = UserRole.WORKER;
+
+        Page<UserListDto> response = userService.findAllUsers(pagination, role);
+
+        return new ResponseEntity<>(response, HttpStatus.OK);
+    }
+
     @GetMapping("/{id}")
     @SecurityRequirement(name = "bearer-key")
     public ResponseEntity<UserListDto> getUserById(@PathVariable UUID id) {
