@@ -137,17 +137,6 @@ public class SchedulingService {
             scheduling.setWorker(worker);
         }
 
-        if (dto.petId() != null) {
-            var pet = petService.findPetById(dto.petId());
-
-            boolean isPetOwner = pet.getClient().getEmail().equalsIgnoreCase(userEmail);
-            if (!isAdminOrWorker && !isPetOwner) {
-                throw new ValidationException("Você não tem permissão para vincular este pet ao agendamento.");
-            }
-
-            scheduling.setPet(pet);
-        }
-
         if (dto.date() != null) {
             scheduling.setDate(dto.date());
         }
