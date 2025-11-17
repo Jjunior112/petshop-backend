@@ -1,10 +1,11 @@
 package com.littlebirds.petshop.application.services;
 
+import com.littlebirds.petshop.domain.dtos.promotion.PromotionListDto;
+import com.littlebirds.petshop.domain.dtos.service.ServiceListDto;
 import com.littlebirds.petshop.domain.models.Promotion;
 import com.littlebirds.petshop.domain.models.Service;
 import com.littlebirds.petshop.infra.repositories.PromotionRepository;
 import com.littlebirds.petshop.infra.repositories.ServiceRepository;
-
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
@@ -50,8 +51,23 @@ public class ServiceService {
         return serviceRepository.save(service);
     }
 
-    public List<Service> findAllWithPromotions() {
-        return serviceRepository.findAll();
+    public List<ServiceListDto> findAllWithPromotions() {
+        List<Service> services = serviceRepository.findAll();
+
+        return services.stream()
+                .map(service -> new ServiceListDto(
+                        service.getId(),
+                        service.getServiceName(),
+                        service.getPrice(),
+                        service.getServiceType().name(),
+                        service.getPromotions().stream()
+                                .map(promotion -> new PromotionListDto(
+                                        promotion.getId(),
+                                        promotion.getDiscount(),
+                                        promotion.getIsActive(),
+                                        promotion.getService().getId()
+                                )).toList()
+                )).toList();
     }
 
     public Optional<Service> findById(Long id) {
@@ -63,4 +79,3 @@ public class ServiceService {
         return serviceRepository.save(service);
     }
 }
-

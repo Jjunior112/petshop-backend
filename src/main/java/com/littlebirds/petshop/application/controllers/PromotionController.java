@@ -2,11 +2,15 @@ package com.littlebirds.petshop.application.controllers;
 
 
 import com.littlebirds.petshop.application.services.PromotionService;
+import com.littlebirds.petshop.domain.dtos.promotion.PromotionCreateDto;
+import com.littlebirds.petshop.domain.dtos.promotion.PromotionListDto;
+import com.littlebirds.petshop.domain.dtos.promotion.PromotionUpdateDto;
 import com.littlebirds.petshop.domain.models.Promotion;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+
 
 @RestController
 @RequestMapping("/promotions")
@@ -19,33 +23,40 @@ public class PromotionController {
     }
 
     @GetMapping
-    public ResponseEntity<List<Promotion>> getAllPromotions() {
-        return ResponseEntity.ok(promotionService.findAll());
+    public ResponseEntity<List<PromotionListDto>> getAllPromotions() {
+        List<Promotion> promotions = promotionService.findAll();
+        return ResponseEntity.ok(
+                promotions.stream()
+                        .map(PromotionListDto::new)
+                        .toList()
+        );
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Promotion> getPromotionById(@PathVariable Long id) {
-        return ResponseEntity.ok(promotionService.findById(id)
-                .orElseThrow(() -> new RuntimeException("Promotion not found")));
+    public ResponseEntity<PromotionListDto> getPromotionById(@PathVariable Long id) {
+        Promotion promotion = promotionService.findById(id)
+                .orElseThrow(() -> new RuntimeException("Promotion not found"));
+        return ResponseEntity.ok(new PromotionListDto(promotion));
     }
 
-    @PostMapping("/{serviceId}")
-    public ResponseEntity<Promotion> createPromotion(
-            @PathVariable Long serviceId, @RequestParam int discount) {
-        return ResponseEntity.ok(promotionService.createPromotion(serviceId, discount));
-    }
-
-    @PutMapping("/{id}/toggle")
-    public ResponseEntity<Promotion> togglePromotion(@PathVariable Long id) {
-        return ResponseEntity.ok(promotionService.togglePromotionStatus(id));
+    @PostMapping
+    public ResponseEntity<PromotionListDto> createPromotion(@RequestBody PromotionCreateDto dto) {
+        Promotion promotion = promotionService.createPromotion(dto.serviceId(), dto.discount());
+        return ResponseEntity.ok(new PromotionListDto(promotion));
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Promotion> updatePromotion(
+    public ResponseEntity<PromotionListDto> updatePromotion(
             @PathVariable Long id,
-            @RequestParam(required = false) Integer discount,
-            @RequestParam(required = false) Boolean isActive) {
-        return ResponseEntity.ok(promotionService.updatePromotion(id, discount, isActive));
+            @RequestBody PromotionUpdateDto dto) {
+        Promotion updatedPromotion = promotionService.updatePromotion(id, dto.discount(), dto.isActive());
+        return ResponseEntity.ok(new PromotionListDto(updatedPromotion));
+    }
+
+    @PutMapping("/{id}/toggle")
+    public ResponseEntity<PromotionListDto> togglePromotion(@PathVariable Long id) {
+        Promotion toggledPromotion = promotionService.togglePromotionStatus(id);
+        return ResponseEntity.ok(new PromotionListDto(toggledPromotion));
     }
 
     @DeleteMapping("/{id}")

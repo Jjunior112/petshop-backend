@@ -2,7 +2,13 @@ package com.littlebirds.petshop.application.controllers;
 
 
 import com.littlebirds.petshop.application.services.ServiceService;
+import com.littlebirds.petshop.domain.dtos.promotion.PromotionListDto;
+import com.littlebirds.petshop.domain.dtos.service.ServiceCreateDto;
+import com.littlebirds.petshop.domain.dtos.service.ServiceListDto;
+import com.littlebirds.petshop.domain.enums.ServiceType;
 import com.littlebirds.petshop.domain.models.Service;
+
+
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -19,29 +25,74 @@ public class ServiceController {
     }
 
     @GetMapping
-    public ResponseEntity<List<Service>> getAllServices() {
-        return ResponseEntity.ok(serviceService.findAllWithPromotions());
+    public ResponseEntity<List<ServiceListDto>> getAllServices() {
+        List<ServiceListDto> dtos = serviceService.findAllWithPromotions();
+        return ResponseEntity.ok(dtos);
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Service> getServiceById(@PathVariable Long id) {
-        return ResponseEntity.ok(serviceService.findById(id)
-                .orElseThrow(() -> new RuntimeException("Service not found")));
+    public ResponseEntity<ServiceListDto> getServiceById(@PathVariable Long id) {
+        Service service = serviceService.findById(id)
+                .orElseThrow(() -> new RuntimeException("Service not found"));
+
+        return ResponseEntity.ok(new ServiceListDto(
+                service.getId(),
+                service.getServiceName(),
+                service.getPrice(),
+                service.getServiceType().name(),
+                service.getPromotions().stream()
+                        .map(p -> new PromotionListDto(p.getId(), p.getDiscount(), p.getIsActive(),p.getService().getId()))
+                        .toList()
+        ));
     }
 
     @PostMapping
-    public ResponseEntity<Service> createService(@RequestBody Service service) {
-        return ResponseEntity.ok(serviceService.save(service));
+    public ResponseEntity<ServiceListDto> createService(@RequestBody ServiceCreateDto dto) {
+        Service service = new Service();
+        service.setServiceName(dto.name());
+        service.setPrice(dto.price());
+        service.setServiceType(ServiceType.valueOf(dto.serviceType())); // Converte string para enum
+
+        Service saved = serviceService.save(service);
+
+        return ResponseEntity.ok(new ServiceListDto(
+                saved.getId(),
+                saved.getServiceName(),
+                saved.getPrice(),
+                saved.getServiceType().name(),
+                List.of()
+        ));
     }
 
     @PutMapping("/{id}/apply-best-promotion")
-    public ResponseEntity<Service> applyBestPromotion(@PathVariable Long id) {
-        return ResponseEntity.ok(serviceService.applyBestPromotion(id));
+    public ResponseEntity<ServiceListDto> applyBestPromotion(@PathVariable Long id) {
+        Service service = serviceService.applyBestPromotion(id);
+
+        return ResponseEntity.ok(new ServiceListDto(
+                service.getId(),
+                service.getServiceName(),
+                service.getPrice(),
+                service.getServiceType().name(),
+                service.getPromotions().stream()
+                        .map(p -> new PromotionListDto(p.getId(), p.getDiscount(), p.getIsActive(),p.getService().getId()))
+                        .toList()
+        ));
     }
 
     @PutMapping("/{id}/apply-promotion/{promotionId}")
-    public ResponseEntity<Service> applySpecificPromotion(
+    public ResponseEntity<ServiceListDto> applySpecificPromotion(
             @PathVariable Long id, @PathVariable Long promotionId) {
-        return ResponseEntity.ok(serviceService.applyPromotion(id, promotionId));
+
+        Service service = serviceService.applyPromotion(id, promotionId);
+
+        return ResponseEntity.ok(new ServiceListDto(
+                service.getId(),
+                service.getServiceName(),
+                service.getPrice(),
+                service.getServiceType().name(),
+                service.getPromotions().stream()
+                        .map(p -> new PromotionListDto(p.getId(), p.getDiscount(), p.getIsActive(),p.getService().getId()))
+                        .toList()
+        ));
     }
 }
