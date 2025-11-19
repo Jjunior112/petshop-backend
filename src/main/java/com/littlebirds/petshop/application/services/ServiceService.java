@@ -70,8 +70,8 @@ public class ServiceService {
                 )).toList();
     }
 
-    public Optional<Service> findById(Long id) {
-        return serviceRepository.findById(id);
+    public Service findById(Long id) {
+        return serviceRepository.getReferenceById(id);
     }
 
     @Transactional
