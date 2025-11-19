@@ -9,6 +9,7 @@ import java.util.UUID;
 public record UserListDto(
         UUID id,
         String fullName,
+        String phone,
         String email,
         UserRole role,
         boolean isActive,
@@ -18,6 +19,7 @@ public record UserListDto(
         this(
                 user.getId(),
                 user.getFullName(),
+                user.getPhone(),
                 user.getEmail(),
                 user.getRole(),
                 user.isActive(),
