@@ -14,7 +14,7 @@ public record SchedulingRegisterDto(
         Long petId,
         @NotNull
         @NotBlank
-        ServiceType serviceType,
+        Long serviceId,
         @NotNull
         @Future
         OffsetDateTime date

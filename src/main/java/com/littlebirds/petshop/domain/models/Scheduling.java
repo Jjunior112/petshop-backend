@@ -28,9 +28,9 @@ public class Scheduling {
     @JoinColumn(name = "pet_id")
     private Pet pet;
 
-    @Column(nullable = false)
-    @Enumerated(EnumType.STRING)
-    private ServiceType serviceType;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "service_id", nullable = false)
+    private Service service;
 
     private String clientName;
 
@@ -47,9 +47,9 @@ public class Scheduling {
     @Enumerated(EnumType.STRING)
     private SchedulingStatus status = SchedulingStatus.PENDING;
 
-    public Scheduling(Pet pet,ServiceType serviceType, String clientName, String clientEmail, Worker worker, @NotNull @Future OffsetDateTime date) {
+    public Scheduling(Pet pet, Service service, String clientName, String clientEmail, Worker worker, @NotNull @Future OffsetDateTime date) {
         this.pet = pet;
-        this.serviceType = serviceType;
+        this.service = service;
         this.clientName = clientName;
         this.clientEmail = clientEmail;
         this.worker = worker;

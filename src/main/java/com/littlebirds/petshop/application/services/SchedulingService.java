@@ -4,14 +4,10 @@ import com.littlebirds.petshop.domain.dtos.scheduling.SchedulingListDto;
 import com.littlebirds.petshop.domain.dtos.scheduling.SchedulingRegisterDto;
 import com.littlebirds.petshop.domain.dtos.scheduling.SchedulingUpdateDto;
 import com.littlebirds.petshop.domain.enums.SchedulingStatus;
-import com.littlebirds.petshop.domain.models.Pet;
 import com.littlebirds.petshop.domain.models.Scheduling;
-import com.littlebirds.petshop.domain.models.Worker;
 import com.littlebirds.petshop.infra.repositories.SchedulingRepository;
-import com.littlebirds.petshop.infra.repositories.UserRepository;
 import com.littlebirds.petshop.infra.repositories.WorkerRepository;
 import com.littlebirds.petshop.infra.validations.Validation;
-import jakarta.persistence.EntityNotFoundException;
 import jakarta.validation.ValidationException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -33,15 +29,16 @@ public class SchedulingService {
 
     private final WorkerRepository workerRepository;
 
-
+    private final ServiceService serviceService;
 
     @Autowired
     private List<Validation> validators;
 
-    public SchedulingService(SchedulingRepository schedulingRepository, PetService petService, WorkerRepository workerRepository) {
+    public SchedulingService(SchedulingRepository schedulingRepository, PetService petService, WorkerRepository workerRepository, ServiceService serviceService) {
         this.schedulingRepository = schedulingRepository;
         this.petService = petService;
         this.workerRepository = workerRepository;
+        this.serviceService = serviceService;
     }
 
     @Transactional
@@ -54,13 +51,15 @@ public class SchedulingService {
 
         var pet = petService.findPetById(registerDto.petId());
 
+        var  service = serviceService.findById(registerDto.serviceId());
+
         if (pet.getClient() == null || !pet.getClient().getEmail().equalsIgnoreCase(userEmail)) {
             throw new ValidationException("Você não tem permissão para agendar serviços para este pet.");
         }
 
         validators.forEach(v -> v.validate(registerDto));
 
-        Scheduling scheduling = new Scheduling(pet, registerDto.serviceType(), pet.getClient().getFullName(), userEmail, worker, registerDto.date());
+        Scheduling scheduling = new Scheduling(pet, service, pet.getClient().getFullName(), userEmail, worker, registerDto.date());
 
         worker.addScheduling(scheduling);
         pet.addScheduling(scheduling);
@@ -119,6 +118,8 @@ public class SchedulingService {
 
         Scheduling scheduling = findById(id);
 
+        com.littlebirds.petshop.domain.models.Service  service = serviceService.findById(dto.serviceId());
+
         boolean isAdminOrWorker = authentication.getAuthorities().stream()
                 .map(GrantedAuthority::getAuthority)
                 .anyMatch(role -> role.equals("ROLE_ADMIN") || role.equals("ROLE_WORKER"));
@@ -135,6 +136,11 @@ public class SchedulingService {
             }
             var worker = workerRepository.getReferenceById(dto.workerId());
             scheduling.setWorker(worker);
+        }
+
+        if(dto.serviceId()!=null)
+        {
+            scheduling.setService(service);
         }
 
         if (dto.date() != null) {

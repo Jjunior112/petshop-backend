@@ -32,8 +32,7 @@ public class ServiceController {
 
     @GetMapping("/{id}")
     public ResponseEntity<ServiceListDto> getServiceById(@PathVariable Long id) {
-        Service service = serviceService.findById(id)
-                .orElseThrow(() -> new RuntimeException("Service not found"));
+        Service service = serviceService.findById(id);
 
         return ResponseEntity.ok(new ServiceListDto(
                 service.getId(),
