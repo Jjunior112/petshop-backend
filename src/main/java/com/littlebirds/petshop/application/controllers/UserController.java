@@ -110,9 +110,18 @@ public class UserController {
         return new ResponseEntity<>(new UserListDto(response), HttpStatus.OK);
     }
 
+    @PutMapping("/{id}")
+    @SecurityRequirement(name = "bearer-key")
+    public ResponseEntity<UserListDto> editUserInfo(@PathVariable UUID id, @RequestBody UserUpdateDto updateDto) {
+
+       var response = userService.editUserInfo(id,updateDto);
+
+        return new ResponseEntity<>(new UserListDto(response), HttpStatus.OK);
+    }
+
     @PutMapping("/reactive/{id}")
     @SecurityRequirement(name = "bearer-key")
-    public ResponseEntity reactiveUser(@PathVariable UUID id) {
+    public ResponseEntity<Void> reactiveUser(@PathVariable UUID id) {
 
         userService.reactiveUser(id);
 
@@ -121,7 +130,7 @@ public class UserController {
 
     @DeleteMapping("/{id}")
     @SecurityRequirement(name = "bearer-key")
-    public ResponseEntity inactiveUser(@PathVariable UUID id) {
+    public ResponseEntity<Void> inactiveUser(@PathVariable UUID id) {
         userService.inactiveUser(id);
 
         return ResponseEntity.noContent().build();

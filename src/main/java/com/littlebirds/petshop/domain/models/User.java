@@ -1,5 +1,6 @@
 package com.littlebirds.petshop.domain.models;
 import com.littlebirds.petshop.domain.dtos.address.AddressRegisterDto;
+import com.littlebirds.petshop.domain.dtos.user.UserUpdateDto;
 import com.littlebirds.petshop.domain.enums.UserRole;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
@@ -63,6 +64,25 @@ public class User implements UserDetails {
         if (isActive) {
             this.isActive = false;
         }
+    }
+
+    public void EditUserInfo(UserUpdateDto updateDto)
+    {
+        if(updateDto.fullName()!=null)
+        {
+            this.fullName = updateDto.fullName();
+        }
+
+        if(updateDto.phone()!=null)
+        {
+            this.phone = updateDto.phone();
+        }
+
+        if(updateDto.addressRegisterDto()!=null)
+        {
+            this.address.updateInformation(updateDto.addressRegisterDto());
+        }
+
     }
 
     public void reactiveUser() {

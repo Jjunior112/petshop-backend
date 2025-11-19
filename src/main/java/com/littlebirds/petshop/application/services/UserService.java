@@ -3,6 +3,7 @@ package com.littlebirds.petshop.application.services;
 import com.littlebirds.petshop.domain.dtos.user.AdminRegisterDto;
 import com.littlebirds.petshop.domain.dtos.user.UserListDto;
 import com.littlebirds.petshop.domain.dtos.user.UserRegisterDto;
+import com.littlebirds.petshop.domain.dtos.user.UserUpdateDto;
 import com.littlebirds.petshop.domain.enums.UserRole;
 import com.littlebirds.petshop.domain.models.Client;
 import com.littlebirds.petshop.domain.models.User;
@@ -123,6 +124,16 @@ public class UserService implements UserDetailsService {
 
     public User findUserById(UUID id) {
         return userRepository.getReferenceById(id);
+    }
+
+    @Transactional
+    public User editUserInfo(UUID id, UserUpdateDto updateDto)
+    {
+        User user = userRepository.getReferenceById(id);
+
+        user.EditUserInfo(updateDto);
+
+        return userRepository.save(user);
     }
 
     @Transactional
