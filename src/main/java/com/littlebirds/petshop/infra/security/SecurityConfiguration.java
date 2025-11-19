@@ -32,12 +32,10 @@ public class SecurityConfiguration {
                         // Apenas ADMIN
                         .requestMatchers(HttpMethod.POST, "/user/adminRegister", "/user/workerRegister").hasRole(UserRole.ADMIN.name())
                         .requestMatchers(HttpMethod.GET, "/user").hasRole(UserRole.ADMIN.name())
-                        .requestMatchers(HttpMethod.PUT, "/user/**", "user/reactive/**").hasRole(UserRole.ADMIN.name())
                         .requestMatchers(HttpMethod.PUT, "/schedulings/complete/**").hasAnyRole(UserRole.WORKER.name(), UserRole.ADMIN.name())
-                        .requestMatchers(HttpMethod.POST, "/products").hasRole(UserRole.ADMIN.name())
-                        .requestMatchers(HttpMethod.PUT, "/products/**").hasRole(UserRole.ADMIN.name())
-                        .requestMatchers(HttpMethod.DELETE, "/products/**").hasRole(UserRole.ADMIN.name())
-                        .requestMatchers(HttpMethod.DELETE, "/sales/**").hasRole(UserRole.ADMIN.name())
+                        .requestMatchers(HttpMethod.POST, "/services","/promotions").hasRole(UserRole.ADMIN.name())
+                        .requestMatchers(HttpMethod.PUT, "/services/**","/promotions/**").hasRole(UserRole.ADMIN.name())
+                        .requestMatchers(HttpMethod.DELETE, "/promotions/**").hasRole(UserRole.ADMIN.name())
 
                         // Qualquer usuário autenticado
                         .requestMatchers(HttpMethod.GET, "/user/workers").authenticated()
