@@ -5,9 +5,11 @@ import com.littlebirds.petshop.domain.dtos.scheduling.SchedulingRegisterDto;
 import com.littlebirds.petshop.domain.dtos.scheduling.SchedulingUpdateDto;
 import com.littlebirds.petshop.domain.enums.SchedulingStatus;
 import com.littlebirds.petshop.domain.models.Scheduling;
+import com.littlebirds.petshop.domain.models.Worker;
 import com.littlebirds.petshop.infra.repositories.SchedulingRepository;
 import com.littlebirds.petshop.infra.repositories.WorkerRepository;
 import com.littlebirds.petshop.infra.validations.Validation;
+import jakarta.persistence.EntityNotFoundException;
 import jakarta.validation.ValidationException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -71,18 +73,33 @@ public class SchedulingService {
         var authentication = SecurityContextHolder.getContext().getAuthentication();
         String userEmail = authentication.getName();
 
-        boolean isAdminOrWorker = authentication.getAuthorities().stream()
-                .map(GrantedAuthority::getAuthority)
-                .anyMatch(role -> role.equals("ROLE_ADMIN") || role.equals("ROLE_WORKER"));
+        boolean isAdmin = authentication.getAuthorities().stream()
+                .anyMatch(a -> a.getAuthority().equals("ROLE_ADMIN"));
+
+        boolean isWorker = authentication.getAuthorities().stream()
+                .anyMatch(a -> a.getAuthority().equals("ROLE_WORKER"));
 
         Page<Scheduling> schedulings;
 
-        if (isAdminOrWorker) {
+        // ADMIN → vê tudo
+        if (isAdmin) {
             schedulings = (status != null)
                     ? schedulingRepository.findByStatus(status, pageable)
                     : schedulingRepository.findAll(pageable);
-        } else {
+        }
 
+        // WORKER → vê somente seus agendamentos
+        else if (isWorker) {
+            Worker worker = workerRepository.findByEmail(userEmail)
+                    .orElseThrow(() -> new EntityNotFoundException("Funcionário não encontrado"));
+
+            schedulings = (status != null)
+                    ? schedulingRepository.findByWorkerIdAndStatus(worker.getId(), status, pageable)
+                    : schedulingRepository.findByWorkerId(worker.getId(), pageable);
+        }
+
+        // CLIENT → vê apenas seus próprios agendamentos (opcional manter)
+        else {
             schedulings = (status != null)
                     ? schedulingRepository.findByClientEmailAndStatus(userEmail, status, pageable)
                     : schedulingRepository.findByClientEmail(userEmail, pageable);

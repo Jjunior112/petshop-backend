@@ -12,6 +12,10 @@ import java.util.UUID;
 
 public interface SchedulingRepository extends JpaRepository<Scheduling, Long> {
 
+    Page<Scheduling> findByWorkerId(UUID workerId, Pageable pageable);
+
+    Page<Scheduling> findByWorkerIdAndStatus(UUID workerId, SchedulingStatus status, Pageable pageable);
+
     Page<Scheduling> findByStatus(SchedulingStatus status, Pageable pageable);
 
     Page<Scheduling> findByClientEmail(String email, Pageable pageable);
